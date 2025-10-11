@@ -46,19 +46,19 @@ export default function Leaderboard() {
   };
 
   return (
-    <div className="min-h-screen pb-20 p-4">
-      <div className="text-center mb-6">
-        <Trophy className="text-primary mx-auto mb-3" size={48} />
-        <h1 className="text-3xl font-bold">Топ игроков</h1>
-        <p className="text-muted-foreground mt-2">Ежедневное соревнование</p>
-        <p className="text-sm text-primary mt-1">🏆 1 место: +10000 ⭐ | 2 место: +5000 ⭐ | 3 место: +2500 ⭐</p>
+    <div className="min-h-screen pb-24 p-4">
+      <div className="text-center mb-4">
+        <Trophy className="text-primary mx-auto mb-2" size={40} />
+        <h1 className="text-2xl font-bold">Топ игроков</h1>
+        <p className="text-muted-foreground text-sm mt-1">Ежедневное соревнование</p>
+        <p className="text-xs text-primary mt-1">🏆 1: +10k ⭐ | 2: +5k ⭐ | 3: +2.5k ⭐</p>
       </div>
 
-      <div className="space-y-3 max-w-2xl mx-auto">
+      <div className="space-y-2.5 max-w-2xl mx-auto">
         {loading ? (
           <div className="text-center py-8">Загрузка...</div>
         ) : leaders.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="text-center py-8 text-muted-foreground text-sm">
             Пока нет данных за сегодня
           </div>
         ) : (
@@ -67,19 +67,19 @@ export default function Leaderboard() {
             return (
               <div
                 key={leader.id}
-                className={`bg-card border-2 rounded-2xl p-4 flex items-center gap-4 ${
+                className={`bg-card border-2 rounded-2xl p-3 flex items-center gap-3 ${
                   index < 3 ? "border-primary shadow-lg shadow-primary/20" : "border-border"
                 }`}
               >
-                <div className="text-3xl font-bold w-12 text-center">
+                <div className="text-2xl font-bold w-10 text-center">
                   {getMedalIcon(index)}
                 </div>
                 
                 <div className="flex-1">
-                  <h3 className="font-bold text-lg">
+                  <h3 className="font-bold text-base">
                     {leader.profiles?.telegram_username || "Unknown"}
                   </h3>
-                  <div className="flex items-center gap-2 text-sm">
+                  <div className="flex items-center gap-1.5 text-xs">
                     <span className="text-muted-foreground">Кликов:</span>
                     <span className="font-bold text-primary">{leader.clicks_count}</span>
                   </div>
@@ -87,8 +87,8 @@ export default function Leaderboard() {
 
                 {reward > 0 && (
                   <div className="text-right">
-                    <div className="flex items-center gap-1 text-primary font-bold">
-                      <Star size={18} className="fill-primary" />
+                    <div className="flex items-center gap-1 text-primary font-bold text-sm">
+                      <Star size={14} className="fill-primary" />
                       <span>+{reward}</span>
                     </div>
                   </div>
@@ -99,12 +99,12 @@ export default function Leaderboard() {
         )}
       </div>
 
-      <div className="mt-8 p-4 bg-card border-2 border-border rounded-2xl max-w-2xl mx-auto">
-        <h3 className="font-bold mb-2 flex items-center gap-2">
-          <Medal className="text-primary" size={20} />
+      <div className="mt-6 p-3 bg-card border-2 border-border rounded-2xl max-w-2xl mx-auto">
+        <h3 className="font-bold mb-2 flex items-center gap-2 text-sm">
+          <Medal className="text-primary" size={16} />
           Правила
         </h3>
-        <ul className="text-sm text-muted-foreground space-y-1">
+        <ul className="text-xs text-muted-foreground space-y-0.5">
           <li>• Соревнование обновляется каждые 24 часа</li>
           <li>• Награды получают топ-3 игрока по кликам за день</li>
           <li>• Кликайте больше, чтобы попасть в топ!</li>

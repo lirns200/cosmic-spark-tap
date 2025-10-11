@@ -14,8 +14,8 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t-2 border-border px-2 py-3 z-50">
-      <div className="flex items-center justify-around max-w-2xl mx-auto">
+    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t-2 border-border pb-safe z-50">
+      <div className="flex items-end justify-center gap-1 px-2 py-2 max-w-2xl mx-auto">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           const Icon = item.icon;
@@ -25,12 +25,12 @@ export default function BottomNav() {
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className="flex flex-col items-center gap-1 relative"
+                className="flex flex-col items-center gap-0.5 mx-1"
               >
-                <div className="bg-primary rounded-full p-4 -mt-8 border-4 border-background star-glow">
-                  <Icon size={28} className="text-primary-foreground fill-primary-foreground" />
+                <div className="bg-primary rounded-full p-2.5 -mb-1 border-4 border-background star-glow shadow-lg">
+                  <Icon size={22} className="text-primary-foreground fill-primary-foreground" />
                 </div>
-                <span className="text-xs font-medium text-primary">{item.label}</span>
+                <span className="text-[9px] font-medium text-primary whitespace-nowrap">{item.label}</span>
               </button>
             );
           }
@@ -39,12 +39,12 @@ export default function BottomNav() {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-colors ${
+              className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-colors flex-1 ${
                 isActive ? "text-primary" : "text-muted-foreground"
               }`}
             >
-              <Icon size={24} className={isActive ? "fill-primary" : ""} />
-              <span className="text-xs font-medium">{item.label}</span>
+              <Icon size={18} className={isActive ? "fill-primary" : ""} />
+              <span className="text-[9px] font-medium whitespace-nowrap">{item.label}</span>
             </button>
           );
         })}

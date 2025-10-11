@@ -10,36 +10,36 @@ export default function Tasks() {
   ];
 
   return (
-    <div className="min-h-screen pb-20 p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Задания</h1>
+    <div className="min-h-screen pb-24 p-4">
+      <h1 className="text-2xl font-bold mb-4 text-center">Задания</h1>
       
-      <div className="space-y-3 max-w-2xl mx-auto">
+      <div className="space-y-2.5 max-w-2xl mx-auto">
         {tasks.map((task) => (
           <div
             key={task.id}
-            className="bg-card border-2 border-border rounded-2xl p-4 flex items-center justify-between"
+            className="bg-card border-2 border-border rounded-2xl p-3 flex items-center justify-between"
           >
-            <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+            <div className="flex items-center gap-2.5">
+              <div className={`w-9 h-9 rounded-full flex items-center justify-center ${
                 task.completed ? "bg-primary" : "bg-muted"
               }`}>
                 {task.completed ? (
-                  <Check className="text-primary-foreground" size={20} />
+                  <Check className="text-primary-foreground" size={18} />
                 ) : (
-                  <Star className="text-muted-foreground" size={20} />
+                  <Star className="text-muted-foreground" size={18} />
                 )}
               </div>
               <div>
-                <h3 className="font-semibold">{task.title}</h3>
+                <h3 className="font-semibold text-sm">{task.title}</h3>
                 <div className="flex items-center gap-1 text-primary">
-                  <Star size={16} className="fill-primary" />
-                  <span className="font-bold">+{task.reward}</span>
+                  <Star size={14} className="fill-primary" />
+                  <span className="font-bold text-xs">+{task.reward}</span>
                 </div>
               </div>
             </div>
             
             {!task.completed && (
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs px-4 py-2">
                 Получить
               </Button>
             )}

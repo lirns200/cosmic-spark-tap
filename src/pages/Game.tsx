@@ -36,7 +36,6 @@ export default function Game() {
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session) {
-      // Автоматический анонимный вход для Telegram Mini App
       const { data, error } = await supabase.auth.signInAnonymously();
       if (error) {
         console.error("Error signing in:", error);
@@ -84,7 +83,6 @@ export default function Game() {
         newStreak = (profileData.streak_days || 0) + 1;
       }
 
-      // Генерация никнейма из Telegram или создание случайного
       const username = profileData.telegram_username === profileData.id.substring(0, 8) 
         ? `Player${Math.floor(Math.random() * 10000)}`
         : profileData.telegram_username;
@@ -203,12 +201,12 @@ export default function Game() {
   const energyPercent = (profile.energy / profile.max_energy) * 100;
 
   return (
-    <div className="min-h-screen flex flex-col pb-20">
+    <div className="min-h-screen flex flex-col pb-24 px-4 pt-3">
       {/* Header */}
-      <div className="p-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-xl font-bold text-foreground">{profile.telegram_username}</span>
-          <div className="bg-primary text-primary-foreground px-4 py-1 rounded-full font-bold flex items-center gap-1">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-bold text-foreground">{profile.telegram_username}</span>
+          <div className="bg-primary text-primary-foreground px-3 py-0.5 rounded-full font-bold flex items-center gap-1 text-sm">
             <span className="text-xs">👑</span>
             <span>Ур. {profile.level}</span>
           </div>
@@ -216,35 +214,35 @@ export default function Game() {
       </div>
 
       {/* Streak */}
-      <div className="px-4 mb-4">
-        <div className="bg-card border-2 border-border rounded-3xl p-4 flex items-center gap-3">
-          <Flame className="text-secondary" size={24} />
-          <span className="text-foreground font-semibold">
+      <div className="mb-3">
+        <div className="bg-card border-2 border-border rounded-3xl p-2.5 flex items-center gap-2">
+          <Flame className="text-secondary" size={18} />
+          <span className="text-foreground font-semibold text-sm">
             {profile.streak_days} {profile.streak_days === 1 ? "день" : profile.streak_days < 5 ? "дня" : "дней"}
           </span>
         </div>
       </div>
 
       {/* Stars Counter */}
-      <div className="px-4 mb-6">
-        <div className="bg-primary rounded-3xl p-6 text-center">
-          <div className="flex items-center justify-center gap-3">
-            <Star className="fill-primary-foreground text-primary-foreground" size={32} />
-            <span className="text-5xl font-bold text-primary-foreground">{profile.stars}</span>
+      <div className="mb-3">
+        <div className="bg-primary rounded-3xl p-4 text-center">
+          <div className="flex items-center justify-center gap-2">
+            <Star className="fill-primary-foreground text-primary-foreground" size={24} />
+            <span className="text-3xl font-bold text-primary-foreground">{profile.stars}</span>
           </div>
         </div>
       </div>
 
       {/* Energy */}
-      <div className="px-4 mb-4">
-        <div className="bg-card border-2 border-border rounded-3xl p-4">
-          <div className="flex items-center gap-3 mb-2">
-            <Battery className="text-primary" size={20} />
-            <span className="text-foreground font-semibold">
+      <div className="mb-3">
+        <div className="bg-card border-2 border-border rounded-3xl p-2.5">
+          <div className="flex items-center gap-2 mb-1.5">
+            <Battery className="text-primary" size={16} />
+            <span className="text-foreground font-semibold text-sm">
               Энергия: {profile.energy}/{profile.max_energy}
             </span>
           </div>
-          <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+          <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
             <div 
               className="h-full bg-primary transition-all duration-300"
               style={{ width: `${energyPercent}%` }}
@@ -254,21 +252,21 @@ export default function Game() {
       </div>
 
       {/* Level Progress */}
-      <div className="px-4 mb-8">
-        <div className="bg-card border-2 border-border rounded-3xl p-4 flex items-center gap-3">
-          <TrendingUp className="text-primary" size={20} />
-          <span className="text-foreground font-semibold">Уровень {profile.level} прогресс</span>
+      <div className="mb-3">
+        <div className="bg-card border-2 border-border rounded-3xl p-2.5 flex items-center gap-2">
+          <TrendingUp className="text-primary" size={16} />
+          <span className="text-foreground font-semibold text-sm">Уровень {profile.level} прогресс</span>
         </div>
       </div>
 
       {/* Clickable Star */}
-      <div className="flex-1 flex items-center justify-center relative px-4">
+      <div className="flex-1 flex items-center justify-center relative min-h-[200px]">
         <div
           onClick={handleClick}
           className={`cursor-pointer select-none ${clicking ? "click-animation" : ""}`}
         >
           <Star 
-            size={200} 
+            size={140} 
             className="star-glow pulse-glow fill-primary text-primary"
             strokeWidth={3}
           />
@@ -278,7 +276,7 @@ export default function Game() {
         {floatingNumbers.map((num) => (
           <div
             key={num.id}
-            className="absolute text-primary font-bold text-2xl pointer-events-none animate-[fadeOut_1s_ease-out]"
+            className="absolute text-primary font-bold text-xl pointer-events-none animate-[fadeOut_1s_ease-out]"
             style={{
               left: num.x,
               top: num.y,
@@ -291,12 +289,12 @@ export default function Game() {
       </div>
 
       {/* Bottom Stats */}
-      <div className="px-4 pb-4 flex gap-3">
-        <div className="flex-1 bg-card border-2 border-border rounded-2xl p-3 text-center">
-          <div className="text-primary font-bold">⚡ +{profile.clicks_per_tap}/клик</div>
+      <div className="flex gap-2 mt-3">
+        <div className="flex-1 bg-card border-2 border-border rounded-2xl p-2 text-center">
+          <div className="text-primary font-bold text-xs">⚡ +{profile.clicks_per_tap}/клик</div>
         </div>
-        <div className="flex-1 bg-card border-2 border-border rounded-2xl p-3 text-center">
-          <div className="text-primary font-bold">📈 {profile.daily_clicks}</div>
+        <div className="flex-1 bg-card border-2 border-border rounded-2xl p-2 text-center">
+          <div className="text-primary font-bold text-xs">📈 {profile.daily_clicks}</div>
         </div>
       </div>
 
@@ -308,7 +306,7 @@ export default function Game() {
           }
           100% {
             opacity: 0;
-            transform: translateY(-100px);
+            transform: translateY(-80px);
           }
         }
       `}</style>

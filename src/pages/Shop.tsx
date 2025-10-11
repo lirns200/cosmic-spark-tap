@@ -10,33 +10,33 @@ export default function Shop() {
   ];
 
   return (
-    <div className="min-h-screen pb-20 p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Магазин</h1>
+    <div className="min-h-screen pb-24 p-4">
+      <h1 className="text-2xl font-bold mb-4 text-center">Магазин</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl mx-auto">
         {items.map((item) => {
           const Icon = item.icon;
           return (
             <div
               key={item.id}
-              className="bg-card border-2 border-border rounded-2xl p-5"
+              className="bg-card border-2 border-border rounded-2xl p-4"
             >
-              <div className="flex items-start gap-3 mb-3">
-                <div className="bg-primary/20 p-3 rounded-xl">
-                  <Icon className="text-primary" size={24} />
+              <div className="flex items-start gap-2.5 mb-2.5">
+                <div className="bg-primary/20 p-2.5 rounded-xl">
+                  <Icon className="text-primary" size={20} />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-lg">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                  <h3 className="font-bold text-base">{item.title}</h3>
+                  <p className="text-xs text-muted-foreground">{item.description}</p>
                 </div>
               </div>
               
-              <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center gap-2">
-                  <Star className="fill-primary text-primary" size={20} />
-                  <span className="font-bold text-lg">{item.cost}</span>
+              <div className="flex items-center justify-between mt-3">
+                <div className="flex items-center gap-1.5">
+                  <Star className="fill-primary text-primary" size={16} />
+                  <span className="font-bold text-base">{item.cost}</span>
                 </div>
-                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs px-4 py-2">
                   Купить
                 </Button>
               </div>
