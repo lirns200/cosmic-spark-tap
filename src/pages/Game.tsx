@@ -2,10 +2,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Star, Flame, Battery, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 
 export default function Game() {
-  const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -36,11 +34,20 @@ export default function Game() {
 
   const checkUser = async () => {
     const { data: { session } } = await supabase.auth.getSession();
-    setUser(session?.user ?? null);
-    if (session?.user) {
-      await loadProfile(session.user.id);
+    
+    if (!session) {
+      // Автоматический анонимный вход для Telegram Mini App
+      const { data, error } = await supabase.auth.signInAnonymously();
+      if (error) {
+        console.error("Error signing in:", error);
+        toast.error("Ошибка входа");
+        return;
+      }
+      setUser(data.user);
+      await loadProfile(data.user!.id);
     } else {
-      navigate("/auth");
+      setUser(session.user);
+      await loadProfile(session.user.id);
     }
     setLoading(false);
   };
@@ -77,16 +84,22 @@ export default function Game() {
         newStreak = (profileData.streak_days || 0) + 1;
       }
 
+      // Генерация никнейма из Telegram или создание случайного
+      const username = profileData.telegram_username === profileData.id.substring(0, 8) 
+        ? `Player${Math.floor(Math.random() * 10000)}`
+        : profileData.telegram_username;
+
       await supabase
         .from("profiles")
         .update({
           last_login_date: today,
           streak_days: newStreak,
-          daily_clicks: 0
+          daily_clicks: 0,
+          telegram_username: username
         })
         .eq("id", profileData.id);
 
-      setProfile({ ...profileData, streak_days: newStreak, daily_clicks: 0, last_login_date: today });
+      setProfile({ ...profileData, streak_days: newStreak, daily_clicks: 0, last_login_date: today, telegram_username: username });
     }
   };
 
