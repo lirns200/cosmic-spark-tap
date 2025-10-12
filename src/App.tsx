@@ -1,6 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Suspense } from "react";
 import Game from "./pages/Game";
@@ -15,7 +15,7 @@ import LoadingScreen from "./components/LoadingScreen";
 
 function App() {
   return (
-    <TooltipProvider>
+    <>
       <Toaster />
       <Sonner position="top-center" />
       <BrowserRouter>
@@ -32,7 +32,7 @@ function App() {
           <BottomNav />
         </Suspense>
       </BrowserRouter>
-    </TooltipProvider>
+    </>
   );
 }
 
