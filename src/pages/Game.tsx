@@ -128,9 +128,8 @@ export default function Game() {
     setClicking(true);
     setTimeout(() => setClicking(false), 300);
 
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = e.clientX;
+    const y = e.clientY;
 
     const id = Date.now();
     setFloatingNumbers([...floatingNumbers, { id, x, y, value: profile.clicks_per_tap }]);
@@ -236,11 +235,18 @@ export default function Game() {
       {/* Energy */}
       <div className="mb-3">
         <div className="bg-card border-2 border-border rounded-3xl p-2.5">
-          <div className="flex items-center gap-2 mb-1.5">
-            <Battery className="text-primary" size={16} />
-            <span className="text-foreground font-semibold text-sm">
-              Энергия: {profile.energy}/{profile.max_energy}
-            </span>
+          <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center gap-2">
+              <Battery className="text-primary" size={16} />
+              <span className="text-foreground font-semibold text-sm">
+                Энергия: {profile.energy}/{profile.max_energy}
+              </span>
+            </div>
+            {profile.energy < profile.max_energy && (
+              <span className="text-xs text-muted-foreground">
+                {Math.ceil((profile.max_energy - profile.energy) / 60)} мин
+              </span>
+            )}
           </div>
           <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
             <div 
@@ -276,7 +282,7 @@ export default function Game() {
         {floatingNumbers.map((num) => (
           <div
             key={num.id}
-            className="absolute text-primary font-bold text-xl pointer-events-none animate-[fadeOut_1s_ease-out]"
+            className="fixed text-primary font-bold text-xl pointer-events-none z-50"
             style={{
               left: num.x,
               top: num.y,
