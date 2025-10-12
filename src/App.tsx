@@ -16,26 +16,29 @@ import LoadingScreen from "./components/LoadingScreen";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner position="top-center" />
-      <BrowserRouter>
-        <Suspense fallback={<LoadingScreen />}>
-          <Routes>
-            <Route path="/" element={<><Game /><BottomNav /></>} />
-            <Route path="/bonuses" element={<><Bonuses /><BottomNav /></>} />
-            <Route path="/shop" element={<><Shop /><BottomNav /></>} />
-            <Route path="/leaderboard" element={<><Leaderboard /><BottomNav /></>} />
-            <Route path="/withdraw" element={<><Withdraw /><BottomNav /></>} />
-            <Route path="/admin" element={<><Admin /><BottomNav /></>} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner position="top-center" />
+        <BrowserRouter>
+          <Suspense fallback={<LoadingScreen />}>
+            <Routes>
+              <Route path="/" element={<Game />} />
+              <Route path="/bonuses" element={<Bonuses />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/withdraw" element={<Withdraw />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <BottomNav />
+          </Suspense>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}
 
 export default App;
