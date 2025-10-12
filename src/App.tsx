@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Game from "./pages/Game";
 import Bonuses from "./pages/Bonuses";
 import Shop from "./pages/Shop";
@@ -14,9 +14,9 @@ import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
 import LoadingScreen from "./components/LoadingScreen";
 
-const queryClient = new QueryClient();
-
 function App() {
+  const [queryClient] = useState(() => new QueryClient());
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
