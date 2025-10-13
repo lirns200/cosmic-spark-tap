@@ -61,10 +61,9 @@ export default function Shop() {
     if (!user || !profile) return;
     
     const currentLevel = getItemLevel(item.id);
-    const price = Number(getItemPrice(item.basePrice, currentLevel));
-    const profileStars = Number(profile.stars);
+    const price = getItemPrice(item.basePrice, currentLevel);
 
-    if (profileStars < price) {
+    if (Number(profile.stars) < price) {
       toast.error("Недостаточно звезд!");
       return;
     }
@@ -77,7 +76,7 @@ export default function Shop() {
           .from("shop_purchases")
           .update({ 
             level: currentLevel + 1,
-            total_spent: Number(purchase.total_spent) + price
+            total_spent: Number(purchase.total_spent || 0) + price
           })
           .eq("id", purchase.id);
         
@@ -97,7 +96,7 @@ export default function Shop() {
 
       const { error: profileError } = await supabase
         .from("profiles")
-        .update({ stars: profileStars - price })
+        .update({ stars: Number(profile.stars) - price })
         .eq("id", user.id);
       
       if (profileError) throw profileError;
