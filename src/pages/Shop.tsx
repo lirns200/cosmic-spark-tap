@@ -51,10 +51,10 @@ export default function Shop() {
   };
 
   const items = [
-    { id: "double_click", title: "Двойной клик", description: "+0.00001 за клик", basePrice: 0.1, icon: Zap },
-    { id: "energy_100", title: "Энергия +100", description: "Максимум энергии +100", basePrice: 0.2, icon: Battery },
-    { id: "triple_click", title: "Тройной клик", description: "+0.00002 за клик", basePrice: 0.5, icon: Zap },
-    { id: "energy_500", title: "Энергия +500", description: "Максимум энергии +500", basePrice: 1, icon: Battery },
+    { id: "double_click", title: "Двойной клик", description: "+0.00001 за клик", basePrice: 0.001, icon: Zap },
+    { id: "energy_100", title: "Энергия +100", description: "Максимум энергии +100", basePrice: 0.002, icon: Battery },
+    { id: "triple_click", title: "Тройной клик", description: "+0.00002 за клик", basePrice: 0.005, icon: Zap },
+    { id: "energy_500", title: "Энергия +500", description: "Максимум энергии +500", basePrice: 0.01, icon: Battery },
   ];
 
   const buyItem = async (item: any) => {
@@ -70,33 +70,44 @@ export default function Shop() {
 
     const purchase = purchases.find(p => p.item_id === item.id);
     
-    if (purchase) {
-      await supabase
-        .from("shop_purchases")
-        .update({ 
-          level: currentLevel + 1,
-          total_spent: purchase.total_spent + price
-        })
-        .eq("id", purchase.id);
-    } else {
-      await supabase
-        .from("shop_purchases")
-        .insert({
-          user_id: user.id,
-          item_id: item.id,
-          level: 1,
-          total_spent: price
-        });
+    try {
+      if (purchase) {
+        const { error } = await supabase
+          .from("shop_purchases")
+          .update({ 
+            level: currentLevel + 1,
+            total_spent: purchase.total_spent + price
+          })
+          .eq("id", purchase.id);
+        
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("shop_purchases")
+          .insert({
+            user_id: user.id,
+            item_id: item.id,
+            level: 1,
+            total_spent: price
+          });
+        
+        if (error) throw error;
+      }
+
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ stars: profile.stars - price })
+        .eq("id", user.id);
+      
+      if (profileError) throw profileError;
+
+      toast.success("Куплено!");
+      await loadProfile(user.id);
+      await loadPurchases(user.id);
+    } catch (error) {
+      console.error("Error buying item:", error);
+      toast.error("Ошибка покупки");
     }
-
-    await supabase
-      .from("profiles")
-      .update({ stars: profile.stars - price })
-      .eq("id", user.id);
-
-    toast.success("Куплено!");
-    await loadProfile(user.id);
-    await loadPurchases(user.id);
   };
 
   return (

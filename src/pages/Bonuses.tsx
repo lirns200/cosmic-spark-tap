@@ -77,7 +77,7 @@ export default function Bonuses() {
             <h2 className="text-lg font-bold">Пригласи друга</h2>
           </div>
           <p className="text-sm text-muted-foreground mb-3">
-            Получай <span className="text-primary font-bold">0.1 ⭐</span> за каждого друга!
+            Получай <span className="text-primary font-bold">5 ⭐</span> за каждого друга!
           </p>
           
           <div className="bg-card rounded-2xl p-3 mb-3">

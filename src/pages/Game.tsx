@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Star, Flame, Battery, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
+import ReferralDialog from "@/components/ReferralDialog";
 
 export default function Game() {
   const [user, setUser] = useState<any>(null);
@@ -9,6 +10,7 @@ export default function Game() {
   const [loading, setLoading] = useState(true);
   const [clicking, setClicking] = useState(false);
   const [floatingNumbers, setFloatingNumbers] = useState<Array<{ id: number; x: number; y: number; value: number }>>([]);
+  const [showReferralDialog, setShowReferralDialog] = useState(false);
 
   useEffect(() => {
     checkUser();
@@ -130,14 +132,15 @@ export default function Game() {
 
     const x = e.clientX;
     const y = e.clientY;
+    const clickValue = 0.0001;
 
     const id = Date.now();
-    setFloatingNumbers([...floatingNumbers, { id, x, y, value: profile.clicks_per_tap }]);
+    setFloatingNumbers([...floatingNumbers, { id, x, y, value: clickValue }]);
     setTimeout(() => {
       setFloatingNumbers(prev => prev.filter(num => num.id !== id));
     }, 1000);
 
-    const newStars = profile.stars + profile.clicks_per_tap;
+    const newStars = profile.stars + clickValue;
     const newEnergy = Math.max(0, profile.energy - 1);
     const newDailyClicks = profile.daily_clicks + 1;
     const newTotalClicks = profile.total_clicks + 1;
@@ -200,7 +203,17 @@ export default function Game() {
   const energyPercent = (profile.energy / profile.max_energy) * 100;
 
   return (
-    <div className="min-h-screen flex flex-col pb-24 px-4 pt-3">
+    <>
+      {user && (
+        <ReferralDialog 
+          userId={user.id} 
+          onComplete={() => {
+            setShowReferralDialog(false);
+            loadProfile(user.id);
+          }} 
+        />
+      )}
+      <div className="min-h-screen flex flex-col pb-24 px-4 pt-3">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
@@ -225,9 +238,9 @@ export default function Game() {
       {/* Stars Counter */}
       <div className="mb-3">
         <div className="bg-primary rounded-3xl p-4 text-center">
-          <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-2">
             <Star className="fill-primary-foreground text-primary-foreground" size={24} />
-            <span className="text-3xl font-bold text-primary-foreground">{profile.stars}</span>
+            <span className="text-3xl font-bold text-primary-foreground">{profile.stars.toFixed(4)}</span>
           </div>
         </div>
       </div>
@@ -297,7 +310,7 @@ export default function Game() {
       {/* Bottom Stats */}
       <div className="flex gap-2 mt-3">
         <div className="flex-1 bg-card border-2 border-border rounded-2xl p-2 text-center">
-          <div className="text-primary font-bold text-xs">⚡ +{profile.clicks_per_tap}/клик</div>
+          <div className="text-primary font-bold text-xs">⚡ +0.0001/клик</div>
         </div>
         <div className="flex-1 bg-card border-2 border-border rounded-2xl p-2 text-center">
           <div className="text-primary font-bold text-xs">📈 {profile.daily_clicks}</div>
@@ -316,6 +329,7 @@ export default function Game() {
           }
         }
       `}</style>
-    </div>
+      </div>
+    </>
   );
 }
