@@ -61,9 +61,10 @@ export default function Shop() {
     if (!user || !profile) return;
     
     const currentLevel = getItemLevel(item.id);
-    const price = getItemPrice(item.basePrice, currentLevel);
+    const price = Number(getItemPrice(item.basePrice, currentLevel));
+    const profileStars = Number(profile.stars);
 
-    if (profile.stars < price) {
+    if (profileStars < price) {
       toast.error("Недостаточно звезд!");
       return;
     }
@@ -76,7 +77,7 @@ export default function Shop() {
           .from("shop_purchases")
           .update({ 
             level: currentLevel + 1,
-            total_spent: purchase.total_spent + price
+            total_spent: Number(purchase.total_spent) + price
           })
           .eq("id", purchase.id);
         
@@ -96,7 +97,7 @@ export default function Shop() {
 
       const { error: profileError } = await supabase
         .from("profiles")
-        .update({ stars: profile.stars - price })
+        .update({ stars: profileStars - price })
         .eq("id", user.id);
       
       if (profileError) throw profileError;
@@ -118,7 +119,7 @@ export default function Shop() {
         <div className="mb-4 text-center">
           <div className="inline-flex items-center gap-2 bg-primary/20 rounded-full px-4 py-2">
             <Star className="fill-primary text-primary" size={20} />
-            <span className="font-bold text-lg">{profile.stars.toFixed(5)}</span>
+            <span className="font-bold text-lg">{Number(profile.stars).toFixed(4)}</span>
           </div>
         </div>
       )}
@@ -152,9 +153,9 @@ export default function Shop() {
               </div>
               
               <div className="flex items-center justify-between mt-3">
-                <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5">
                   <Star className="fill-primary text-primary" size={16} />
-                  <span className="font-bold text-base">{price.toFixed(5)}</span>
+                  <span className="font-bold text-base">{Number(price).toFixed(4)}</span>
                 </div>
                 <Button 
                   onClick={() => buyItem(item)}

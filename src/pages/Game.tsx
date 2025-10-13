@@ -140,7 +140,8 @@ export default function Game() {
       setFloatingNumbers(prev => prev.filter(num => num.id !== id));
     }, 1000);
 
-    const newStars = profile.stars + clickValue;
+    const currentStars = Number(profile.stars);
+    const newStars = currentStars + clickValue;
     const newEnergy = Math.max(0, profile.energy - 1);
     const newDailyClicks = profile.daily_clicks + 1;
     const newTotalClicks = profile.total_clicks + 1;

@@ -105,13 +105,13 @@ export default function ReferralDialog({ userId, onComplete }: ReferralDialogPro
       // Update referrer stars
       await supabase
         .from("profiles")
-        .update({ stars: (referrerProfile?.stars || 0) + 5 })
+        .update({ stars: Number(referrerProfile?.stars || 0) + 5 })
         .eq("id", referrerData.user_id);
 
       // Update current user stars
       await supabase
         .from("profiles")
-        .update({ stars: (userProfile?.stars || 0) + 5 })
+        .update({ stars: Number(userProfile?.stars || 0) + 5 })
         .eq("id", userId);
 
       toast.success("Получено 5 звезд! Ваш друг тоже получил 5 звезд!");
