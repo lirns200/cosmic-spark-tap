@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Star, Flame, Battery } from "lucide-react";
 import { toast } from "sonner";
 import ReferralDialog from "@/components/ReferralDialog";
-import { getTelegramUser, initTelegramWebApp } from "@/utils/telegram";
+import { getTelegramUser, initTelegramWebApp } from "@/lib/telegram";
 
 export default function Game() {
   const [user, setUser] = useState<any>(null);
