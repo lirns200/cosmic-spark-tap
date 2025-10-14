@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Star, Flame, Battery } from "lucide-react";
 import { toast } from "sonner";
 import ReferralDialog from "@/components/ReferralDialog";
+import { getTelegramUser, initTelegramWebApp } from "@/utils/telegram";
 
 export default function Game() {
   const [user, setUser] = useState<any>(null);
@@ -13,6 +14,7 @@ export default function Game() {
   const [showReferralDialog, setShowReferralDialog] = useState(false);
 
   useEffect(() => {
+    initTelegramWebApp();
     checkUser();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
@@ -38,7 +40,23 @@ export default function Game() {
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session) {
-      const { data, error } = await supabase.auth.signInAnonymously();
+      const telegramUser = getTelegramUser();
+      
+      // Получаем данные пользователя Telegram
+      const metadata: any = {};
+      if (telegramUser) {
+        metadata.username = telegramUser.username;
+        metadata.first_name = telegramUser.first_name;
+        metadata.last_name = telegramUser.last_name;
+        metadata.telegram_id = telegramUser.id;
+      }
+      
+      const { data, error } = await supabase.auth.signInAnonymously({
+        options: {
+          data: metadata
+        }
+      });
+      
       if (error) {
         console.error("Error signing in:", error);
         toast.error("Ошибка входа");

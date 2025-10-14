@@ -16,13 +16,13 @@ export default function BottomNav() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user) return;
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("telegram_username")
-      .eq("id", session.user.id)
-      .single();
+    // Используем функцию has_role для проверки
+    const { data, error } = await supabase.rpc('has_role', {
+      _user_id: session.user.id,
+      _role: 'admin'
+    });
 
-    if (profile?.telegram_username === "L1r_No") {
+    if (!error && data === true) {
       setIsAdmin(true);
     }
   };
