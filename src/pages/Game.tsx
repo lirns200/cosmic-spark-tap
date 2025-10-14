@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Star, Flame, Battery, TrendingUp } from "lucide-react";
+import { Star, Flame, Battery } from "lucide-react";
 import { toast } from "sonner";
 import ReferralDialog from "@/components/ReferralDialog";
 
@@ -81,8 +81,19 @@ export default function Game() {
       const yesterdayStr = yesterday.toISOString().split('T')[0];
 
       let newStreak = 1;
-      if (lastLogin === yesterdayStr && profileData.daily_clicks >= 100) {
-        newStreak = (profileData.streak_days || 0) + 1;
+      // Проверяем, был ли вчера логин И накликал ли 100+ раз вчера
+      if (lastLogin === yesterdayStr) {
+        // Проверяем количество кликов за вчера из leaderboard
+        const { data: yesterdayStats } = await supabase
+          .from("daily_leaderboard")
+          .select("clicks_count")
+          .eq("user_id", profileData.id)
+          .eq("date", yesterdayStr)
+          .single();
+        
+        if (yesterdayStats && yesterdayStats.clicks_count >= 100) {
+          newStreak = (profileData.streak_days || 0) + 1;
+        }
       }
 
       const username = profileData.telegram_username === profileData.id.substring(0, 8) 
@@ -111,12 +122,12 @@ export default function Game() {
 
     const { data: updated } = await supabase
       .from("profiles")
-      .select("energy")
+      .select("energy, max_energy")
       .eq("id", user.id)
       .single();
 
     if (updated) {
-      setProfile({ ...profile, energy: updated.energy });
+      setProfile({ ...profile, energy: updated.energy, max_energy: updated.max_energy });
     }
   };
 
@@ -132,15 +143,31 @@ export default function Game() {
 
     const x = e.clientX;
     const y = e.clientY;
-    const clickValue = 0.0001;
+    
+    // Загружаем улучшения из магазина
+    const { data: purchases } = await supabase
+      .from("shop_purchases")
+      .select("*")
+      .eq("user_id", user.id);
+
+    let baseClickValue = 0.0001;
+    
+    // Применяем улучшения кликов
+    if (purchases) {
+      const doubleClick = purchases.find(p => p.item_id === "double_click");
+      const tripleClick = purchases.find(p => p.item_id === "triple_click");
+      
+      if (doubleClick) baseClickValue += 0.00001 * doubleClick.level;
+      if (tripleClick) baseClickValue += 0.00002 * tripleClick.level;
+    }
 
     const id = Date.now();
-    setFloatingNumbers([...floatingNumbers, { id, x, y, value: clickValue }]);
+    setFloatingNumbers([...floatingNumbers, { id, x, y, value: baseClickValue }]);
     setTimeout(() => {
       setFloatingNumbers(prev => prev.filter(num => num.id !== id));
     }, 1000);
 
-    const newStars = Number(profile.stars) + clickValue;
+    const newStars = Number(profile.stars) + baseClickValue;
     const newEnergy = Math.max(0, profile.energy - 1);
     const newDailyClicks = profile.daily_clicks + 1;
     const newTotalClicks = profile.total_clicks + 1;
@@ -218,10 +245,6 @@ export default function Game() {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-lg font-bold text-foreground">{profile.telegram_username}</span>
-          <div className="bg-primary text-primary-foreground px-3 py-0.5 rounded-full font-bold flex items-center gap-1 text-sm">
-            <span className="text-xs">👑</span>
-            <span>Ур. {profile.level}</span>
-          </div>
         </div>
       </div>
 
@@ -270,13 +293,6 @@ export default function Game() {
         </div>
       </div>
 
-      {/* Level Progress */}
-      <div className="mb-3">
-        <div className="bg-card border-2 border-border rounded-3xl p-2.5 flex items-center gap-2">
-          <TrendingUp className="text-primary" size={16} />
-          <span className="text-foreground font-semibold text-sm">Уровень {profile.level} прогресс</span>
-        </div>
-      </div>
 
       {/* Clickable Star */}
       <div className="flex-1 flex items-center justify-center relative min-h-[200px]">
@@ -310,10 +326,7 @@ export default function Game() {
       {/* Bottom Stats */}
       <div className="flex gap-2 mt-3">
         <div className="flex-1 bg-card border-2 border-border rounded-2xl p-2 text-center">
-          <div className="text-primary font-bold text-xs">⚡ +0.0001/клик</div>
-        </div>
-        <div className="flex-1 bg-card border-2 border-border rounded-2xl p-2 text-center">
-          <div className="text-primary font-bold text-xs">📈 {profile.daily_clicks}</div>
+          <div className="text-primary font-bold text-xs">📈 {profile.daily_clicks} кликов</div>
         </div>
       </div>
 

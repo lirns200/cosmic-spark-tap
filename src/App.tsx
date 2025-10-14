@@ -9,6 +9,7 @@ import Shop from "./pages/Shop";
 import Leaderboard from "./pages/Leaderboard";
 import Withdraw from "./pages/Withdraw";
 import Admin from "./pages/Admin";
+import Referrals from "./pages/Referrals";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
 import LoadingScreen from "./components/LoadingScreen";
@@ -25,6 +26,7 @@ function App() {
             <Route path="/bonuses" element={<Bonuses />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/referrals" element={<Referrals />} />
             <Route path="/withdraw" element={<Withdraw />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFound />} />

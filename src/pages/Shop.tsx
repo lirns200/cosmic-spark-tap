@@ -94,9 +94,18 @@ export default function Shop() {
         if (error) throw error;
       }
 
+      // Обновляем профиль с учетом улучшений энергии
+      let maxEnergyUpdate: any = { stars: Number(profile.stars) - price };
+      
+      if (item.id === "energy_100" || item.id === "energy_500") {
+        const energyBonus = item.id === "energy_100" ? 100 : 500;
+        const newMaxEnergy = profile.max_energy + energyBonus;
+        maxEnergyUpdate.max_energy = newMaxEnergy;
+      }
+
       const { error: profileError } = await supabase
         .from("profiles")
-        .update({ stars: Number(profile.stars) - price })
+        .update(maxEnergyUpdate)
         .eq("id", user.id);
       
       if (profileError) throw profileError;

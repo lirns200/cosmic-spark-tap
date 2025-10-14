@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Star, Trophy, ShoppingBag, ClipboardList, Wallet, Shield } from "lucide-react";
+import { Star, Trophy, ShoppingBag, Users, Wallet, Shield } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -28,7 +28,7 @@ export default function BottomNav() {
   };
 
   const navItems = [
-    { path: "/bonuses", icon: ClipboardList, label: "Бонусы" },
+    { path: "/referrals", icon: Users, label: "Друзья" },
     { path: "/shop", icon: ShoppingBag, label: "Магазин" },
     { path: "/", icon: Star, label: "Играть", isMain: true },
     { path: "/leaderboard", icon: Trophy, label: "Топ" },
