@@ -150,88 +150,44 @@ export default function Game() {
   };
 
   const handleClick = async (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!profile || !user) return;
-    if (profile.energy <= 0) {
-      toast.error("Нет энергии! Подождите восстановления");
-      return;
-    }
+    if (profile.energy < 1 || !profile) return;
 
-    setClicking(true);
-    setTimeout(() => setClicking(false), 300);
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
-    const x = e.clientX;
-    const y = e.clientY;
-    
-    // Загружаем улучшения из магазина
-    const { data: purchases } = await supabase
-      .from("shop_purchases")
-      .select("*")
-      .eq("user_id", user.id);
-
-    let baseClickValue = 0.0001;
-    
-    // Применяем улучшения кликов
-    if (purchases) {
-      const doubleClick = purchases.find(p => p.item_id === "double_click");
-      const tripleClick = purchases.find(p => p.item_id === "triple_click");
-      
-      if (doubleClick) baseClickValue += 0.00001 * doubleClick.level;
-      if (tripleClick) baseClickValue += 0.00002 * tripleClick.level;
-    }
-
-    const id = Date.now();
-    setFloatingNumbers([...floatingNumbers, { id, x, y, value: baseClickValue }]);
-    setTimeout(() => {
-      setFloatingNumbers(prev => prev.filter(num => num.id !== id));
-    }, 1000);
-
-    const newStars = Number(profile.stars) + baseClickValue;
-    const newEnergy = Math.max(0, profile.energy - 1);
-    const newDailyClicks = profile.daily_clicks + 1;
-    const newTotalClicks = profile.total_clicks + 1;
-
-    setProfile({
-      ...profile,
-      stars: newStars,
-      energy: newEnergy,
-      daily_clicks: newDailyClicks,
-      total_clicks: newTotalClicks
-    });
-
-    const { error } = await supabase
-      .from("profiles")
-      .update({
-        stars: newStars,
-        energy: newEnergy,
-        daily_clicks: newDailyClicks,
-        total_clicks: newTotalClicks
-      })
-      .eq("id", user.id);
-
-    if (error) {
-      console.error("Error updating profile:", error);
-    }
-
-    await updateLeaderboard(newDailyClicks);
-  };
-
-  const updateLeaderboard = async (dailyClicks: number) => {
-    if (!user) return;
-    
-    const today = new Date().toISOString().split('T')[0];
-    
-    const { error } = await supabase
-      .from("daily_leaderboard")
-      .upsert({
-        user_id: user.id,
-        date: today,
-        clicks_count: dailyClicks
-      }, {
-        onConflict: "user_id,date"
+    try {
+      // Call server-side click processing
+      const { data, error } = await supabase.functions.invoke('process-click', {
+        body: { clickX: x, clickY: y }
       });
 
-    if (error) {
-      console.error("Error updating leaderboard:", error);
+      if (error) {
+        console.error('Click processing error:', error);
+        toast.error('Ошибка обработки клика');
+        return;
+      }
+
+      if (!data.success) {
+        if (data.error === 'Not enough energy') {
+          toast.error('Недостаточно энергии');
+        }
+        return;
+      }
+
+      // Update local state with server response
+      setProfile(data.profile);
+
+      // Create floating number animation
+      const id = Date.now();
+      setFloatingNumbers(prev => [...prev, { id, value: data.clickValue, x, y }]);
+      setTimeout(() => {
+        setFloatingNumbers(prev => prev.filter(num => num.id !== id));
+      }, 1000);
+
+    } catch (error) {
+      console.error('Click error:', error);
+      toast.error('Ошибка');
     }
   };
 
