@@ -23,13 +23,12 @@ export default function Admin() {
       return;
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("telegram_username")
-      .eq("id", session.user.id)
-      .single();
+    const { data: isAdmin } = await supabase.rpc('has_role', {
+      _user_id: session.user.id,
+      _role: 'admin'
+    });
 
-    if (profile?.telegram_username === "L1r_No") {
+    if (isAdmin) {
       setIsAdmin(true);
       await loadPlayers();
     }
