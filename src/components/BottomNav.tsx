@@ -36,9 +36,9 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t-2 border-border pb-safe z-50">
-      <div className="flex items-end justify-between gap-1 px-2 py-2 max-w-2xl mx-auto">
-        <div className="flex items-end justify-center gap-1 flex-1">
+    <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-card via-card to-card/95 border-t-2 border-primary/20 pb-safe z-50 backdrop-blur-lg">
+      <div className="flex items-end justify-between gap-0.5 px-3 py-2.5 max-w-2xl mx-auto">
+        <div className="flex items-end justify-center gap-0.5 flex-1">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
@@ -48,12 +48,12 @@ export default function BottomNav() {
                 <button
                   key={item.path}
                   onClick={() => navigate(item.path)}
-                  className="flex flex-col items-center gap-0.5 mx-1"
+                  className="flex flex-col items-center gap-1 mx-2 group"
                 >
-                  <div className="bg-primary rounded-full p-2.5 -mb-1 border-4 border-background star-glow shadow-lg">
-                    <Icon size={22} className="text-primary-foreground fill-primary-foreground" />
+                  <div className="bg-gradient-gold rounded-full p-3.5 -mb-2 border-4 border-background shadow-lg shadow-primary/50 group-hover:scale-110 transition-transform">
+                    <Icon size={24} className="text-primary-foreground fill-primary-foreground" />
                   </div>
-                  <span className="text-[9px] font-medium text-primary whitespace-nowrap">{item.label}</span>
+                  <span className="text-[10px] font-bold text-primary whitespace-nowrap tracking-wide">{item.label}</span>
                 </button>
               );
             }
@@ -62,12 +62,25 @@ export default function BottomNav() {
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-colors flex-1 ${
-                  isActive ? "text-primary" : "text-muted-foreground"
+                className={`flex flex-col items-center gap-1 px-2.5 py-1.5 rounded-2xl transition-all flex-1 group ${
+                  isActive 
+                    ? "bg-primary/10 text-primary shadow-sm shadow-primary/20" 
+                    : "text-muted-foreground hover:bg-muted/30"
                 }`}
               >
-                <Icon size={18} className={isActive ? "fill-primary" : ""} />
-                <span className="text-[9px] font-medium whitespace-nowrap">{item.label}</span>
+                <Icon 
+                  size={20} 
+                  className={`transition-all ${
+                    isActive 
+                      ? "fill-primary scale-110" 
+                      : "group-hover:scale-105"
+                  }`} 
+                />
+                <span className={`text-[10px] font-semibold whitespace-nowrap ${
+                  isActive ? "" : "group-hover:text-foreground"
+                }`}>
+                  {item.label}
+                </span>
               </button>
             );
           })}
@@ -76,10 +89,10 @@ export default function BottomNav() {
         {isAdmin && (
           <button
             onClick={() => navigate("/admin")}
-            className="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-colors hover:bg-primary/10"
+            className="flex flex-col items-center gap-1 px-2.5 py-1.5 rounded-2xl transition-all hover:bg-primary/10 ml-1"
           >
-            <Shield size={18} className="text-primary" />
-            <span className="text-[9px] font-medium text-primary">Admin</span>
+            <Shield size={20} className="text-primary" />
+            <span className="text-[10px] font-semibold text-primary">Admin</span>
           </button>
         )}
       </div>

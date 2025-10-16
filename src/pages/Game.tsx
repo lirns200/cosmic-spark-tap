@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Star, Flame, Battery } from "lucide-react";
 import { toast } from "sonner";
 import ReferralDialog from "@/components/ReferralDialog";
+import PromoCodeDialog from "@/components/PromoCodeDialog";
+import NicknameEditor from "@/components/NicknameEditor";
 import { getTelegramUser, initTelegramWebApp } from "@/lib/telegram";
 
 export default function Game() {
@@ -12,6 +14,12 @@ export default function Game() {
   const [clicking, setClicking] = useState(false);
   const [floatingNumbers, setFloatingNumbers] = useState<Array<{ id: number; x: number; y: number; value: number }>>([]);
   const [showReferralDialog, setShowReferralDialog] = useState(false);
+  const [showPromoDialog, setShowPromoDialog] = useState(false);
+  
+  // Secret combination tracking
+  const clickSequence = useRef<number[]>([]);
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
+  const isLongPressing = useRef(false);
 
   useEffect(() => {
     initTelegramWebApp();
@@ -149,7 +157,47 @@ export default function Game() {
     }
   };
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    isLongPressing.current = false;
+    longPressTimer.current = setTimeout(() => {
+      isLongPressing.current = true;
+      clickSequence.current = [1]; // Start sequence with long press
+    }, 1000);
+  };
+
+  const handleMouseUp = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+    }
+  };
+
   const handleClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    // Check for secret combination
+    if (isLongPressing.current) {
+      isLongPressing.current = false;
+      return;
+    }
+
+    // Track clicks for secret combination
+    if (clickSequence.current.length > 0 && clickSequence.current.length < 3) {
+      clickSequence.current.push(2);
+      
+      // Check if sequence is complete (long press + 2 clicks)
+      if (clickSequence.current.length === 3) {
+        setShowPromoDialog(true);
+        clickSequence.current = [];
+        toast.success("Секретная комбинация активирована! 🎉");
+        return;
+      }
+      
+      // Reset after 3 seconds of inactivity
+      setTimeout(() => {
+        if (clickSequence.current.length < 3) {
+          clickSequence.current = [];
+        }
+      }, 3000);
+    }
+
     if (profile.energy < 1 || !profile) return;
 
     const rect = e.currentTarget.getBoundingClientRect();
@@ -206,61 +254,73 @@ export default function Game() {
   return (
     <>
       {user && (
-        <ReferralDialog 
-          userId={user.id} 
-          onComplete={() => {
-            setShowReferralDialog(false);
-            loadProfile(user.id);
-          }} 
-        />
+        <>
+          <ReferralDialog 
+            userId={user.id} 
+            onComplete={() => {
+              setShowReferralDialog(false);
+              loadProfile(user.id);
+            }} 
+          />
+          <PromoCodeDialog
+            open={showPromoDialog}
+            onOpenChange={setShowPromoDialog}
+            userId={user.id}
+            onSuccess={() => loadProfile(user.id)}
+          />
+        </>
       )}
-      <div className="min-h-screen flex flex-col pb-24 px-4 pt-3">
+      <div className="min-h-screen flex flex-col pb-24 px-4 pt-4">
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-foreground">{profile.telegram_username}</span>
-        </div>
+      <div className="flex items-center justify-between mb-4">
+        {profile && user && (
+          <NicknameEditor
+            userId={user.id}
+            currentNickname={profile.telegram_username}
+            onUpdate={() => loadProfile(user.id)}
+          />
+        )}
       </div>
 
       {/* Streak */}
-      <div className="mb-3">
-        <div className="bg-card border-2 border-border rounded-3xl p-2.5 flex items-center gap-2">
-          <Flame className="text-secondary" size={18} />
-          <span className="text-foreground font-semibold text-sm">
-            {profile.streak_days} {profile.streak_days === 1 ? "день" : profile.streak_days < 5 ? "дня" : "дней"}
+      <div className="mb-4">
+        <div className="bg-gradient-fire border-2 border-secondary/30 rounded-3xl p-3 flex items-center gap-2.5 shadow-lg shadow-secondary/20">
+          <Flame className="text-foreground" size={22} />
+          <span className="text-foreground font-bold text-base">
+            {profile.streak_days} {profile.streak_days === 1 ? "день" : profile.streak_days < 5 ? "дня" : "дней"} подряд
           </span>
         </div>
       </div>
 
       {/* Stars Counter */}
-      <div className="mb-3">
-        <div className="bg-primary rounded-3xl p-4 text-center">
-      <div className="flex items-center justify-center gap-2">
-            <Star className="fill-primary-foreground text-primary-foreground" size={24} />
-            <span className="text-3xl font-bold text-primary-foreground">{profile.stars.toFixed(4)}</span>
+      <div className="mb-4">
+        <div className="bg-gradient-gold rounded-3xl p-5 text-center shadow-xl shadow-primary/30">
+          <div className="flex items-center justify-center gap-2.5">
+            <Star className="fill-primary-foreground text-primary-foreground animate-pulse" size={28} />
+            <span className="text-4xl font-black text-primary-foreground tracking-tight">{profile.stars.toFixed(4)}</span>
           </div>
         </div>
       </div>
 
       {/* Energy */}
-      <div className="mb-3">
-        <div className="bg-card border-2 border-border rounded-3xl p-2.5">
-          <div className="flex items-center justify-between mb-1.5">
-            <div className="flex items-center gap-2">
-              <Battery className="text-primary" size={16} />
-              <span className="text-foreground font-semibold text-sm">
-                Энергия: {profile.energy}/{profile.max_energy}
+      <div className="mb-4">
+        <div className="bg-card border-2 border-primary/30 rounded-3xl p-3.5 shadow-lg">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2.5">
+              <Battery className="text-primary" size={20} />
+              <span className="text-foreground font-bold text-base">
+                {profile.energy}/{profile.max_energy}
               </span>
             </div>
             {profile.energy < profile.max_energy && (
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-primary font-semibold bg-primary/10 px-2.5 py-1 rounded-full">
                 {Math.ceil((profile.max_energy - profile.energy) / 60)} мин
               </span>
             )}
           </div>
-          <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
             <div 
-              className="h-full bg-primary transition-all duration-300"
+              className="h-full gradient-gold transition-all duration-300 shadow-sm"
               style={{ width: `${energyPercent}%` }}
             />
           </div>
@@ -269,15 +329,17 @@ export default function Game() {
 
 
       {/* Clickable Star */}
-      <div className="flex-1 flex items-center justify-center relative min-h-[200px]">
+      <div className="flex-1 flex items-center justify-center relative min-h-[250px]">
         <div
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
           onClick={handleClick}
           className={`cursor-pointer select-none ${clicking ? "click-animation" : ""}`}
         >
           <Star 
-            size={160} 
-            className="star-glow pulse-glow fill-primary text-primary rotate-star"
-            strokeWidth={2.5}
+            size={180} 
+            className="star-glow pulse-glow fill-primary text-primary rotate-star drop-shadow-2xl"
+            strokeWidth={2}
           />
         </div>
 
