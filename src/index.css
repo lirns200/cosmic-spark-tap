@@ -47,10 +47,6 @@ All colors MUST be HSL.
     --energy-bar: 48 100% 65%;
     --level-badge: 48 100% 65%;
     --streak-fire: 14 95% 58%;
-    
-    /* Gradients */
-    --gradient-gold: linear-gradient(135deg, hsl(48 100% 65%), hsl(40 95% 55%));
-    --gradient-fire: linear-gradient(135deg, hsl(14 95% 58%), hsl(8 90% 50%));
   }
 }
 
@@ -99,10 +95,10 @@ All colors MUST be HSL.
   }
   
   .gradient-gold {
-    background: var(--gradient-gold);
+    background: linear-gradient(135deg, hsl(48 100% 65%), hsl(40 95% 55%));
   }
   
   .gradient-fire {
-    background: var(--gradient-fire);
+    background: linear-gradient(135deg, hsl(14 95% 58%), hsl(8 90% 50%));
   }
 }

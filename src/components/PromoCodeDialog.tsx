@@ -75,8 +75,8 @@ export default function PromoCodeDialog({ open, onOpenChange, userId, onSuccess 
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center justify-center mb-4">
-            <div className="bg-gradient-gold p-4 rounded-full animate-pulse">
-              <Sparkles className="text-primary-foreground" size={40} />
+            <div className="bg-gradient-to-br from-primary/30 to-primary/10 p-4 rounded-full animate-pulse">
+              <Sparkles className="text-primary" size={40} />
             </div>
           </div>
           <DialogTitle className="text-center text-2xl">Секретный промокод</DialogTitle>
@@ -96,7 +96,7 @@ export default function PromoCodeDialog({ open, onOpenChange, userId, onSuccess 
           <Button 
             onClick={handleSubmit} 
             disabled={loading}
-            className="w-full gradient-gold text-primary-foreground font-bold text-lg py-6"
+            className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold text-lg py-6"
           >
             {loading ? "Проверка..." : "Активировать"}
           </Button>

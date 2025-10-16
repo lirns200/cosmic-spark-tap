@@ -121,13 +121,13 @@ export default function Shop() {
 
   return (
     <div className="min-h-screen pb-24 p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">Магазин</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">Магазин</h1>
       
       {profile && (
-        <div className="mb-4 text-center">
-          <div className="inline-flex items-center gap-2 bg-primary/20 rounded-full px-4 py-2">
-            <Star className="fill-primary text-primary" size={20} />
-            <span className="font-bold text-lg">{Number(profile.stars).toFixed(4)}</span>
+        <div className="mb-6 text-center">
+          <div className="inline-flex items-center gap-2.5 bg-gradient-to-br from-primary/20 to-primary/10 border-2 border-primary/30 rounded-full px-6 py-3 shadow-lg shadow-primary/20">
+            <Star className="fill-primary text-primary" size={24} />
+            <span className="font-black text-2xl text-foreground">{Number(profile.stars).toFixed(4)}</span>
           </div>
         </div>
       )}

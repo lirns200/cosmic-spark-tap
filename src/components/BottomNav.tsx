@@ -36,7 +36,7 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-card via-card to-card/95 border-t-2 border-primary/20 pb-safe z-50 backdrop-blur-lg">
+    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 border-t-2 border-primary/20 pb-safe z-50 backdrop-blur-md">
       <div className="flex items-end justify-between gap-0.5 px-3 py-2.5 max-w-2xl mx-auto">
         <div className="flex items-end justify-center gap-0.5 flex-1">
           {navItems.map((item) => {
@@ -50,7 +50,7 @@ export default function BottomNav() {
                   onClick={() => navigate(item.path)}
                   className="flex flex-col items-center gap-1 mx-2 group"
                 >
-                  <div className="bg-gradient-gold rounded-full p-3.5 -mb-2 border-4 border-background shadow-lg shadow-primary/50 group-hover:scale-110 transition-transform">
+                  <div className="bg-primary rounded-full p-3.5 -mb-2 border-4 border-background shadow-lg shadow-primary/50 group-hover:scale-110 transition-transform">
                     <Icon size={24} className="text-primary-foreground fill-primary-foreground" />
                   </div>
                   <span className="text-[10px] font-bold text-primary whitespace-nowrap tracking-wide">{item.label}</span>

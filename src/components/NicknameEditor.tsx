@@ -86,7 +86,7 @@ export default function NicknameEditor({ userId, currentNickname, onUpdate }: Ni
               <Button 
                 onClick={handleSave} 
                 disabled={loading}
-                className="flex-1 gradient-gold"
+                className="flex-1 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
               >
                 {loading ? "Сохранение..." : "Сохранить"}
               </Button>

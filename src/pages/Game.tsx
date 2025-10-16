@@ -284,8 +284,8 @@ export default function Game() {
 
       {/* Streak */}
       <div className="mb-4">
-        <div className="bg-gradient-fire border-2 border-secondary/30 rounded-3xl p-3 flex items-center gap-2.5 shadow-lg shadow-secondary/20">
-          <Flame className="text-foreground" size={22} />
+        <div className="bg-gradient-to-r from-secondary/30 to-secondary/20 border-2 border-secondary/30 rounded-3xl p-3 flex items-center gap-2.5 shadow-lg shadow-secondary/20">
+          <Flame className="text-secondary" size={22} />
           <span className="text-foreground font-bold text-base">
             {profile.streak_days} {profile.streak_days === 1 ? "день" : profile.streak_days < 5 ? "дня" : "дней"} подряд
           </span>
@@ -294,7 +294,7 @@ export default function Game() {
 
       {/* Stars Counter */}
       <div className="mb-4">
-        <div className="bg-gradient-gold rounded-3xl p-5 text-center shadow-xl shadow-primary/30">
+        <div className="bg-gradient-to-br from-primary to-primary/80 rounded-3xl p-5 text-center shadow-xl shadow-primary/30">
           <div className="flex items-center justify-center gap-2.5">
             <Star className="fill-primary-foreground text-primary-foreground animate-pulse" size={28} />
             <span className="text-4xl font-black text-primary-foreground tracking-tight">{profile.stars.toFixed(4)}</span>
@@ -320,7 +320,7 @@ export default function Game() {
           </div>
           <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
             <div 
-              className="h-full gradient-gold transition-all duration-300 shadow-sm"
+              className="h-full bg-gradient-to-r from-primary to-primary/70 transition-all duration-300 shadow-sm"
               style={{ width: `${energyPercent}%` }}
             />
           </div>
