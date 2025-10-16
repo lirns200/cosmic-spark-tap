@@ -275,9 +275,9 @@ export default function Game() {
           className={`cursor-pointer select-none ${clicking ? "click-animation" : ""}`}
         >
           <Star 
-            size={140} 
-            className="star-glow pulse-glow fill-primary text-primary"
-            strokeWidth={3}
+            size={160} 
+            className="star-glow pulse-glow fill-primary text-primary rotate-star"
+            strokeWidth={2.5}
           />
         </div>
 
@@ -314,6 +314,19 @@ export default function Game() {
             opacity: 0;
             transform: translateY(-80px);
           }
+        }
+        
+        @keyframes rotateStar {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+        
+        .rotate-star {
+          animation: rotateStar 20s linear infinite;
         }
       `}</style>
       </div>

@@ -126,15 +126,7 @@ export default function ReferralDialog({ userId, onComplete }: ReferralDialogPro
   };
 
   const handleSkip = async () => {
-    // Create a dummy referral record to mark as "skipped"
-    await supabase
-      .from("referrals")
-      .insert({
-        referrer_id: userId, // Use own ID to mark as skipped
-        referred_id: userId,
-        reward_claimed: true
-      });
-    
+    // Just mark as completed without creating invalid referral
     setOpen(false);
     onComplete();
   };

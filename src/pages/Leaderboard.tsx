@@ -11,6 +11,26 @@ export default function Leaderboard() {
   useEffect(() => {
     loadLeaderboard();
     loadSquads();
+    
+    // Subscribe to realtime updates
+    const channel = supabase
+      .channel('leaderboard-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'daily_leaderboard'
+        },
+        () => {
+          loadLeaderboard();
+        }
+      )
+      .subscribe();
+      
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const loadLeaderboard = async () => {

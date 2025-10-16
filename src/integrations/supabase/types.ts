@@ -93,6 +93,7 @@ export type Database = {
           max_energy: number
           stars: number
           streak_days: number
+          telegram_id: number | null
           telegram_username: string
           total_clicks: number
           updated_at: string
@@ -108,6 +109,7 @@ export type Database = {
           max_energy?: number
           stars?: number
           streak_days?: number
+          telegram_id?: number | null
           telegram_username: string
           total_clicks?: number
           updated_at?: string
@@ -123,6 +125,7 @@ export type Database = {
           max_energy?: number
           stars?: number
           streak_days?: number
+          telegram_id?: number | null
           telegram_username?: string
           total_clicks?: number
           updated_at?: string
@@ -277,6 +280,7 @@ export type Database = {
           id: string
           member_count: number | null
           name: string
+          owner_id: string | null
           telegram_chat_id: string | null
           total_clicks: number | null
           updated_at: string | null
@@ -286,6 +290,7 @@ export type Database = {
           id?: string
           member_count?: number | null
           name: string
+          owner_id?: string | null
           telegram_chat_id?: string | null
           total_clicks?: number | null
           updated_at?: string | null
@@ -295,6 +300,7 @@ export type Database = {
           id?: string
           member_count?: number | null
           name?: string
+          owner_id?: string | null
           telegram_chat_id?: string | null
           total_clicks?: number | null
           updated_at?: string | null
