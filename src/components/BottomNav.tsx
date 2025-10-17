@@ -36,9 +36,9 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 border-t-2 border-primary/20 pb-safe z-50 backdrop-blur-md">
-      <div className="flex items-end justify-between gap-0.5 px-3 py-2.5 max-w-2xl mx-auto">
-        <div className="flex items-end justify-center gap-0.5 flex-1">
+    <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/98 to-background/95 border-t-2 border-primary/30 pb-safe z-50 backdrop-blur-xl shadow-2xl shadow-primary/10">
+      <div className="flex items-end justify-between gap-1 px-4 py-3 max-w-2xl mx-auto">
+        <div className="flex items-end justify-center gap-1 flex-1">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
@@ -48,12 +48,14 @@ export default function BottomNav() {
                 <button
                   key={item.path}
                   onClick={() => navigate(item.path)}
-                  className="flex flex-col items-center gap-1 mx-2 group"
+                  className="flex flex-col items-center gap-1.5 mx-3 group"
                 >
-                  <div className="bg-primary rounded-full p-3.5 -mb-2 border-4 border-background shadow-lg shadow-primary/50 group-hover:scale-110 transition-transform">
-                    <Icon size={24} className="text-primary-foreground fill-primary-foreground" />
+                  <div className={`bg-gradient-to-br from-primary via-primary to-primary/90 rounded-full p-4 -mb-3 border-4 border-background shadow-2xl transition-all duration-300 ${
+                    isActive ? "shadow-primary/60 scale-110" : "shadow-primary/40 group-hover:shadow-primary/60 group-hover:scale-105"
+                  }`}>
+                    <Icon size={28} className="text-primary-foreground fill-primary-foreground" strokeWidth={2.5} />
                   </div>
-                  <span className="text-[10px] font-bold text-primary whitespace-nowrap tracking-wide">{item.label}</span>
+                  <span className="text-[11px] font-extrabold text-primary whitespace-nowrap tracking-wide mt-1">{item.label}</span>
                 </button>
               );
             }
@@ -62,22 +64,23 @@ export default function BottomNav() {
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className={`flex flex-col items-center gap-1 px-2.5 py-1.5 rounded-2xl transition-all flex-1 group ${
+                className={`flex flex-col items-center gap-1.5 px-3 py-2 rounded-2xl transition-all duration-300 flex-1 group ${
                   isActive 
-                    ? "bg-primary/10 text-primary shadow-sm shadow-primary/20" 
-                    : "text-muted-foreground hover:bg-muted/30"
+                    ? "bg-primary/15 text-primary shadow-md shadow-primary/25 scale-105" 
+                    : "text-muted-foreground hover:bg-primary/10 hover:text-primary hover:scale-105"
                 }`}
               >
                 <Icon 
-                  size={20} 
-                  className={`transition-all ${
+                  size={22} 
+                  className={`transition-all duration-300 ${
                     isActive 
                       ? "fill-primary scale-110" 
-                      : "group-hover:scale-105"
-                  }`} 
+                      : "group-hover:scale-110"
+                  }`}
+                  strokeWidth={2.5}
                 />
-                <span className={`text-[10px] font-semibold whitespace-nowrap ${
-                  isActive ? "" : "group-hover:text-foreground"
+                <span className={`text-[10px] font-bold whitespace-nowrap transition-all ${
+                  isActive ? "text-primary" : "group-hover:text-primary"
                 }`}>
                   {item.label}
                 </span>
@@ -89,10 +92,10 @@ export default function BottomNav() {
         {isAdmin && (
           <button
             onClick={() => navigate("/admin")}
-            className="flex flex-col items-center gap-1 px-2.5 py-1.5 rounded-2xl transition-all hover:bg-primary/10 ml-1"
+            className="flex flex-col items-center gap-1.5 px-3 py-2 rounded-2xl transition-all duration-300 hover:bg-primary/15 hover:scale-105 ml-2 shadow-sm hover:shadow-md hover:shadow-primary/20"
           >
-            <Shield size={20} className="text-primary" />
-            <span className="text-[10px] font-semibold text-primary">Admin</span>
+            <Shield size={22} className="text-primary transition-transform group-hover:scale-110" strokeWidth={2.5} />
+            <span className="text-[10px] font-bold text-primary">Admin</span>
           </button>
         )}
       </div>

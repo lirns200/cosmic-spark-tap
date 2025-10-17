@@ -6,6 +6,7 @@ import ReferralDialog from "@/components/ReferralDialog";
 import PromoCodeDialog from "@/components/PromoCodeDialog";
 import NicknameEditor from "@/components/NicknameEditor";
 import { getTelegramUser, initTelegramWebApp } from "@/lib/telegram";
+import SettingsDialog from "@/components/SettingsDialog";
 
 export default function Game() {
   const [user, setUser] = useState<any>(null);
@@ -158,10 +159,12 @@ export default function Game() {
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
     isLongPressing.current = false;
     longPressTimer.current = setTimeout(() => {
       isLongPressing.current = true;
       clickSequence.current = [1]; // Start sequence with long press
+      toast.info("Продолжайте: сделайте еще 2 клика", { duration: 2000 });
     }, 1000);
   };
 
@@ -172,12 +175,8 @@ export default function Game() {
   };
 
   const handleClick = async (e: React.MouseEvent<HTMLDivElement>) => {
-    // Check for secret combination
-    if (isLongPressing.current) {
-      isLongPressing.current = false;
-      return;
-    }
-
+    e.preventDefault();
+    
     // Track clicks for secret combination
     if (clickSequence.current.length > 0 && clickSequence.current.length < 3) {
       clickSequence.current.push(2);
@@ -196,9 +195,11 @@ export default function Game() {
           clickSequence.current = [];
         }
       }, 3000);
+      
+      return; // Don't process as normal click
     }
 
-    if (profile.energy < 1 || !profile) return;
+    if (!profile || profile.energy < 1) return;
 
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -280,6 +281,7 @@ export default function Game() {
             onUpdate={() => loadProfile(user.id)}
           />
         )}
+        <SettingsDialog />
       </div>
 
       {/* Streak */}
